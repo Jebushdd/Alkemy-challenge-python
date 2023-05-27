@@ -1,0 +1,7 @@
+# Ignorar venv
+etl_env/
+
+# Ignorar carpetas de outputs
+bibliotecas/
+cines/
+museos/
