@@ -4,26 +4,25 @@ import os
 from datetime import date
 
 url = 'https://datos.cultura.gob.ar/dataset/espacios-culturales-argentina-sinca'
-r = requests.get(url)
-contenido = r.text
 
-soup = BeautifulSoup(r.text, 'lxml')
 
 def get_urls(url):
     '''
     Devuelve un diccionario con las urls de los recursos del dataset
     Pasar como argumento la url del dataset
     '''
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'lxml')
     diccionario = {}
     for i in soup.find_all('h3'):
-        diccionario[i.text.strip()] = soup.find('h3', text=i.text)\
-                             .find_previous('button', text='DESCARGAR')\
+        diccionario[i.text.strip()] = soup.find('h3', string=i.text)\
+                             .find_previous('button', string='DESCARGAR')\
                              .find_previous('a')['href']
     return diccionario
 dataset = get_urls(url)
 
 # Definir strings de fechas
-anio_mes = date.today().strftime('%Y-%B')
+anio_mes = date.today().strftime('%Y-%B').lower()
 dia_mes_anio = date.today().strftime('%d-%m-%Y')
 
 # Definir directorios
