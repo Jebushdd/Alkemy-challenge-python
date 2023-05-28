@@ -1,4 +1,5 @@
-from extraer_datos import get_urls, crear_str_dir, crear_dir, crear_dir_output, descargar_csv
+from extraer_datos import get_urls, descargar_csv
+from rutas import crear_dir, DIR_BIBLIOTECAS, DIR_CINES, DIR_MUSEOS, CSV_BIBLIOTECAS, CSV_CINES, CSV_MUSEOS
 
 
 if __name__ == '__main__':
@@ -12,22 +13,12 @@ if __name__ == '__main__':
     url_museos = dataset.get('Museo')
     url_cines = dataset.get('Cine')
 
-    # Definir rutas de los directorios para los outputs
-    dir_bibliotecas = crear_str_dir('bibliotecas')
-    dir_museos = crear_str_dir('museos')
-    dir_cines = crear_str_dir('cines')
-
     # Crear directorios para los outputs
-    crear_dir(dir_bibliotecas)
-    crear_dir(dir_cines)
-    crear_dir(dir_museos)
-
-    # Definir rutas para los outputs
-    csv_bibliotecas = crear_dir_output(dir_bibliotecas, 'bibliotecas')
-    csv_museos = crear_dir_output(dir_museos, 'museos')
-    csv_cines = crear_dir_output(dir_cines,'cines')
+    crear_dir(DIR_BIBLIOTECAS)
+    crear_dir(DIR_CINES)
+    crear_dir(DIR_MUSEOS)
 
     # Descargar csvs
-    descargar_csv(url_bibliotecas, csv_bibliotecas)
-    descargar_csv(url_museos, csv_museos)
-    descargar_csv(url_cines, csv_cines)
+    descargar_csv(url_bibliotecas, CSV_BIBLIOTECAS)
+    descargar_csv(url_museos, CSV_MUSEOS)
+    descargar_csv(url_cines, CSV_CINES)
