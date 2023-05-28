@@ -1,5 +1,6 @@
-# Ignorar venv
+# Ignorar carpetas de entorno y config
 etl_env/
+__pycache__/
 
 # Ignorar carpetas de outputs
 bibliotecas/
