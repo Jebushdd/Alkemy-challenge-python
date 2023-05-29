@@ -1,6 +1,6 @@
 from extraer_datos import get_urls, descargar_csv
 from rutas import crear_dir, DIR_BIBLIOTECAS, DIR_CINES, DIR_MUSEOS, CSV_BIBLIOTECAS, CSV_CINES, CSV_MUSEOS
-from transformar_datos import normalizar_campos, nuevos_campos, rename_cols
+from transformar_datos import normalizar_csv, nuevos_campos, rename_cols, tabla_unificada
 
 
 if __name__ == '__main__':
@@ -31,9 +31,9 @@ if __name__ == '__main__':
     # ----------------------------------------- #
 
     # Cargar csvs y normalizar campos
-    raw_df_bibliotecas = normalizar_campos(CSV_BIBLIOTECAS)
-    raw_df_museos = normalizar_campos(CSV_MUSEOS)
-    raw_df_cines = normalizar_campos(CSV_CINES)
+    raw_df_bibliotecas = normalizar_csv(CSV_BIBLIOTECAS)
+    raw_df_museos = normalizar_csv(CSV_MUSEOS)
+    raw_df_cines = normalizar_csv(CSV_CINES)
 
     # Tomar campos requeridos de cada dataframe
     df_bibliotecas = nuevos_campos(raw_df_bibliotecas)
@@ -44,3 +44,11 @@ if __name__ == '__main__':
     df_bibliotecas = rename_cols(df_bibliotecas)
     df_museos = rename_cols(df_museos)
     df_cines = rename_cols(df_cines)
+
+    # Crear tabla unificada
+    lista_dfs = [df_bibliotecas,df_museos,df_cines]
+    consolidado = tabla_unificada(lista_dfs)
+
+    # Crear tabla de categorías
+
+    # Crear tabla de cines
