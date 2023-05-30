@@ -1,6 +1,7 @@
 # Ignorar carpetas de entorno y config
 etl_env/
 __pycache__/
+.ipynb_checkpoints/
 
 # Ignorar carpetas de outputs
 bibliotecas/
