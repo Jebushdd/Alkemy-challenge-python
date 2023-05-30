@@ -47,7 +47,7 @@ def nuevos_campos(df:pd.DataFrame):
             new_df[['número de teléfono', 'mail']] = 's/d'
             new_df['web'] = df['web']
         
-        case 'Espacios de Exhibición Patrimonial':
+        case 'Espacios de Exhibicion Patrimonial':
             new_df = df[['cod_loc', 'idprovincia', 'iddepartamento', 'categoria', 'provincia', 'localidad', 'nombre', 'direccion', 'cp', 'telefono', 'mail', 'web']]
         
         case 'Bibliotecas Populares':
@@ -78,43 +78,49 @@ def tabla_unificada(lista_dfs:list):
     consolidado = pd.concat(lista_dfs, ignore_index=True)
     return consolidado
 
-def tabla_categorias():
-    return ''
+def tabla_contador_registros(lista_dfs:list):
+    '''
+    Concatena varios raw DataFrames y devuelve un unificado solo con 
+    campos de provincia, fuente y categoría. 
+    Toma como argumento una lista de DataFrames.
+    '''
+    contador_registros = pd.concat(lista_dfs, ignore_index=True)[['provincia','categoria','fuente']]
+    return contador_registros
+
+def tabla_contador_cines(df_cines:pd.DataFrame):
+    '''
+    Toma un raw DataFrame con la base de datos de Cines solo con los
+    campos de Provincia, Cantidad de pantallas, Cantidad de butacas
+    y Cantidad de espacios INCAA.
+    Toma como argumento un DataFrame
+    '''
+    contador_cines = df_cines[['provincia','pantallas','butacas','espacio_incaa']]
+    return contador_cines
+
+def correr_script():
+    # Leer csvs y normalizar campos
+    raw_df_bibliotecas = normalizar_csv(CSV_BIBLIOTECAS)
+    raw_df_museos = normalizar_csv(CSV_MUSEOS)
+    raw_df_cines = normalizar_csv(CSV_CINES)
+    # Tomar campos requeridas en cada dataframe
+    df_bibliotecas = nuevos_campos(raw_df_bibliotecas)
+    df_museos = nuevos_campos(raw_df_museos)
+    df_cines = nuevos_campos(raw_df_cines)
+    # Crear dataframes con campos renombrados
+    df_bibliotecas = rename_cols(df_bibliotecas)
+    df_museos = rename_cols(df_museos)
+    df_cines = rename_cols(df_cines)
+    # Crear tabla unificada
+    lista_dfs = [df_bibliotecas,df_museos,df_cines]
+    consolidado = tabla_unificada(lista_dfs)
+    # Crear tabla de contador general
+    lista_raw_dfs = [raw_df_bibliotecas, raw_df_museos, raw_df_cines]
+    contador_registros = tabla_contador_registros(lista_raw_dfs)
+    # Crear tabla de contador para cines
+    contador_cines = tabla_contador_cines(raw_df_cines)
+
+    return (consolidado,contador_registros,contador_cines)
 
 
-# Leer csvs y normalizar campos
-raw_df_bibliotecas = normalizar_csv(CSV_BIBLIOTECAS)
-raw_df_museos = normalizar_csv(CSV_MUSEOS)
-raw_df_cines = normalizar_csv(CSV_CINES)
-# Tomar campos requeridas en cada dataframe
-df_bibliotecas = nuevos_campos(raw_df_bibliotecas)
-df_museos = nuevos_campos(raw_df_museos)
-df_cines = nuevos_campos(raw_df_cines)
-# Crear dataframes con campos renombrados
-df_bibliotecas = rename_cols(df_bibliotecas)
-df_museos = rename_cols(df_museos)
-df_cines = rename_cols(df_cines)
-# Crear tabla unificada
-lista_dfs = [df_bibliotecas,df_museos,df_cines]
-consolidado = tabla_unificada(lista_dfs)
-# Crear tabla de categorías
-
-
-
-# Registros totales por categoria
-registros_categoria = pd.DataFrame(consolidado.groupby(by= 'categoría')['categoría'].count())
-registros_categoria.columns=['total_registros']
-
-# Registros totales por fuente
-registros_fuente = pd.concat([raw_df_bibliotecas,raw_df_museos,raw_df_cines], ignore_index=True)
-registros_fuente = pd.DataFrame(registros_fuente.groupby(by='fuente')['fuente'].count())
-registros_fuente.columns=['total_registros']
-
-# Registros por provincia y categoria
-registros_provincia_categoria = pd.DataFrame(consolidado.groupby(by=['provincia', 'categoría'])['provincia'].count())
-registros_provincia_categoria.columns = ['total_registros']
-
-# Tabla de cines
-tabla_cines = raw_df_cines[['provincia', 'pantallas', 'butacas', 'espacio_incaa']].copy()
-tabla_cines['espacio_incaa'] = (tabla_cines['espacio_incaa'] == 'Si').astype(int)
-tabla_cines = tabla_cines.groupby(by='provincia').sum()
+if __name__ == '__main__':
+    correr_script()
