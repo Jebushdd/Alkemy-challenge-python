@@ -1,6 +1,6 @@
 from extraer_datos import get_urls, descargar_csv
 from rutas import crear_dir, DIR_BIBLIOTECAS, DIR_CINES, DIR_MUSEOS, CSV_BIBLIOTECAS, CSV_CINES, CSV_MUSEOS
-from transformar_datos import normalizar_csv, nuevos_campos, rename_cols, tabla_unificada
+from transformar_datos import normalizar_csv, nuevos_campos, rename_cols, tabla_unificada, tabla_contador_registros, tabla_contador_cines
 
 
 if __name__ == '__main__':
@@ -27,6 +27,7 @@ if __name__ == '__main__':
     descargar_csv(url_museos, CSV_MUSEOS)
     descargar_csv(url_cines, CSV_CINES)
 
+
     # -------- Parte 2: Transformación -------- #
     # ----------------------------------------- #
 
@@ -48,7 +49,22 @@ if __name__ == '__main__':
     # Crear tabla unificada
     lista_dfs = [df_bibliotecas,df_museos,df_cines]
     consolidado = tabla_unificada(lista_dfs)
+    
+    # Crear tabla de contador general
+    lista_raw_dfs = [raw_df_bibliotecas, raw_df_museos, raw_df_cines]
+    contador_registros = tabla_contador_registros(lista_raw_dfs)
+    
+    # Crear tabla de contador para cines
+    contador_cines = tabla_contador_cines(raw_df_cines)
 
-    # Crear tabla de categorías
 
-    # Crear tabla de cines
+    # -------- Test Parcial: Partes 1 y 2 -------- #
+    # -------------------------------------------- #
+    print('\n\ndf consolidado')
+    print(consolidado)
+
+    print('\n\ndf contador de registros')
+    print(contador_registros)
+
+    print('\n\ndf contador para cines')
+    print(contador_cines)
